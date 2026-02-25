@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проектное Бюро</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Страница входа -->
+    <div id="login-page" class="login-page">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-icon">🏢</div>
+                <h1>Проектное Бюро</h1>
+                <p>Система управления проектами</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" required placeholder="ivanov@prokb.ru">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <div id="login-error" class="error-message hidden"></div>
+                <button type="submit" class="btn-primary btn-full">
+                    <span id="login-btn-text">Войти</span>
+                    <span id="login-btn-loader" class="hidden">Загрузка...</span>
+                </button>
+            </form>
+            <div class="login-demo">
+                <p>Демо-доступ (пароль: 123456):</p>
+                <ul>
+                    <li><code>ivanov@prokb.ru</code> — Директор</li>
+                    <li><code>sidorova@prokb.ru</code> — ГИП</li>
+                    <li><code>petrov@prokb.ru</code> — Сотрудник</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное приложение -->
+    <div id="app" class="app hidden">
+        <!-- Сайдбар -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🏢</div>
+                <span class="sidebar-title">Проектное Бюро</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Главная</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="projects">
+                    <span class="nav-icon">📁</span>
+                    <span>Проекты</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="tasks">
+                    <span class="nav-icon">✅</span>
+                    <span>Задачи</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="employees" id="employees-nav">
+                    <span class="nav-icon">👥</span>
+                    <span>Сотрудники</span>
+                </a>
+                <a href="#" class="sidebar-item" data-page="admin" id="admin-nav">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">АВ</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-name">Имя пользователя</div>
+                        <div class="user-role" id="user-role">Роль</div>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn-logout">Выйти</button>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Dashboard -->
+            <div id="dashboard-page" class="page">
+                <div class="page-header">
+                    <h1 id="welcome-text">Добро пожаловать!</h1>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-projects">0</div>
+                        <div class="stat-label">Проектов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-in-progress">0</div>
+                        <div class="stat-label">В работе</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-completed">0</div>
+                        <div class="stat-label">Завершено</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-employees">0</div>
+                        <div class="stat-label">Сотрудников</div>
+                    </div>
+                </div>
+                <h2 class="section-title">Последние проекты</h2>
+                <div id="dashboard-projects" class="projects-grid"></div>
+            </div>
+
+            <!-- Страница проектов -->
+            <div id="projects-page" class="page hidden">
+                <div class="page-header">
+                    <h1>Проекты</h1>
+                    <button id="new-project-btn" class="btn-primary">+ Новый проект</button>
+                </div>
+                <div class="status-tabs" id="project-status-tabs">
+                    <button class="status-tab active" data-status="in_work">В работе</button>
+                    <button class="status-tab" data-status="in_expertise">В экспертизе</button>
+                    <button class="status-tab" data-status="completed">Выполнено</button>
+                    <button class="status-tab" data-status="archived">Архив</button>
+                </div>
+                <div id="projects-list" class="projects-grid"></div>
+            </div>
+
+            <!-- Страница проекта -->
+            <div id="project-page" class="page hidden">
+                <div class="page-header">
+                    <button id="back-to-projects" class="btn-back">← Назад</button>
+                    <h1 id="project-title">Название проекта</h1>
+                    <div class="page-actions">
+                        <button id="edit-project-btn" class="btn-secondary">Редактировать</button>
+                    </div>
+                </div>
+                
+                <div class="project-tabs">
+                    <button class="project-tab active" data-tab="sections">Разделы</button>
+                    <button class="project-tab" data-tab="info">Информация</button>
+                    <button class="project-tab" data-tab="contacts">Контакты</button>
+                    <button class="project-tab" data-tab="investigations">Изыскания</button>
+                </div>
+                
+                <div id="project-tab-content">
+                    <!-- Разделы -->
+                    <div id="sections-tab" class="tab-content">
+                        <div id="project-sections" class="sections-list"></div>
+                    </div>
+                    
+                    <!-- Информация -->
+                    <div id="info-tab" class="tab-content hidden">
+                        <div id="project-info"></div>
+                    </div>
+                    
+                    <!-- Контакты -->
+                    <div id="contacts-tab" class="tab-content hidden">
+                        <div id="contact-persons"></div>
+                    </div>
+                    
+                    <!-- Изыскания -->
+                    <div id="investigations-tab" class="tab-content hidden">
+                        <div class="tab-header">
+                            <h2>Изыскания</h2>
+                            <button id="add-investigation-btn" class="btn-primary">+ Добавить</button>
+                        </div>
+                        <div id="investigations-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Страница раздела -->
+            <div id="section-page" class="page hidden">
+                <div class="page-header">
+                    <button id="back-to-project" class="btn-back">← Назад к проекту</button>
+                    <h1 id="section-title">Раздел</h1>
+                </div>
+                <div id="section-content"></div>
+            </div>
+
+            <!-- Страница задач -->
+            <div id="tasks-page" class="page hidden">
+                <div class="page-header">
+                    <h1>Задачи</h1>
+                    <button id="new-task-btn" class="btn-primary">+ Новая задача</button>
+                </div>
+                <div id="tasks-list"></div>
+            </div>
+
+            <!-- Страница сотрудников -->
+            <div id="employees-page" class="page hidden">
+                <div class="page-header">
+                    <h1>Сотрудники</h1>
+                    <button id="new-employee-btn" class="btn-primary">+ Новый сотрудник</button>
+                </div>
+                <div id="employees-list"></div>
+            </div>
+
+            <!-- Страница настроек -->
+            <div id="admin-page" class="page hidden">
+                <div class="page-header">
+                    <h1>Настройки</h1>
+                </div>
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="investigations">Изыскания</button>
+                    <button class="admin-tab" data-tab="sections">Разделы</button>
+                </div>
+                <div id="admin-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="modal-overlay" class="modal-overlay hidden"></div>
+    
+    <!-- Модальное окно создания проекта -->
+    <div id="new-project-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Новый проект</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <form id="new-project-form">
+                <div class="form-group">
+                    <label>Название *</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Шифр</label>
+                    <input type="text" name="code">
+                </div>
+                <div class="form-group">
+                    <label>Адрес</label>
+                    <input type="text" name="address">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Тип работ</label>
+                        <select name="type">
+                            <option value="construction">Новое строительство</option>
+                            <option value="capital_repair">Капитальный ремонт</option>
+                            <option value="reconstruction">Реконструкция</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Срок</label>
+                        <input type="date" name="deadline">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Разделы</label>
+                    <div id="project-sections-checkboxes" class="checkboxes-grid"></div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary modal-close">Отмена</button>
+                <button type="submit" form="new-project-form" class="btn-primary">Создать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления изыскания -->
+    <div id="add-investigation-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить изыскание</h2>
+                <button class="modal-close">×</button>
+            </div>
+            <form id="add-investigation-form">
+                <div class="form-group">
+                    <label>Выберите из списка</label>
+                    <select name="standard_id" id="inv-standard-id">
+                        <option value="">-- Выберите --</option>
+                    </select>
+                </div>
+                <div class="form-divider">или</div>
+                <div class="form-group">
+                    <label>Введите название</label>
+                    <input type="text" name="custom_name" id="inv-custom-name" placeholder="Своё название">
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary modal-close">Отмена</button>
+                <button type="submit" form="add-investigation-form" class="btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast уведомления -->
+    <div id="toast-container"></div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>
